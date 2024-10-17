@@ -1,0 +1,43 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "Task https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/crud-api/assignment.md",
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "start": "ts-node-dev ./src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "pretier:check": "prettier . --check",
+    "pretier:fix": "prettier . --write",
+    "lp:check": "npm run lint && npm run pretier:check",
+    "lp:fix": "npm run lint:fix && npm run pretier:fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palasja/RSS_Node_FileManager"
+  },
+  "keywords": [
+    "nodejs",
+    "CRUD API",
+    "palasja"
+  ],
+  "author": "palasja",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/parser": "^8.9.0",
+    "eslint": "^9.12.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.9.0"
+  },
+  "dependencies": {
+    "@types/node": "^22.7.6",
+    "uuid": "^10.0.0"
+  }
+}

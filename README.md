@@ -1,2 +1,0 @@
-# RSS_Node_CRUD_API
-
