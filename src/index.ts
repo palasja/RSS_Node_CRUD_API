@@ -1,6 +1,5 @@
-import path from 'node:path';
 import { User } from './user';
-
+import 'dotenv/config';
 import http, { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 
@@ -28,7 +27,13 @@ const sendData = (res: ServerResponse, data: SendData) => {
   res.writeHead(data.statusCode, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data.sendObject));
 }
-
+// const userValidation = (user: {id?: string; username?: string; age?: number; hobbies?: string[]}) : boolean => {
+//   if(user.id) delete user.id;
+//   const nameIsString = user.username ? typeof user.username === 'string' : true;
+//   const ageIsNumber =  user.age ? typeof user.age === 'number' : true;
+//   const hobbiesIsStringArray =  user.hobbies ? user.hobbies.every( h => typeof h == 'string') : true; 
+//   return nameIsString && ageIsNumber && hobbiesIsStringArray;
+// }
 const get = (req: IncomingMessage, res: ServerResponse) => {
     const arrArg = req.url.split('/');
     if(arrArg.length == 2 ) {
@@ -132,7 +137,7 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
     return;
   }
 
-  const user = userArr.find( u => u.id == id);
+const user = userArr.find( u => u.id == id);
   if(user == undefined){
     sendData(res, {
       statusCode: 404, 
@@ -141,19 +146,22 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
     }});
   } else {
     const arrId = userArr.findIndex( u => u.id == id);
+    
     userArr[arrId] = {...userArr[arrId], ...bodyO};
     sendData(res, {
-      statusCode: 200 , 
+      statusCode: 201 ,
       sendObject: userArr[arrId]});
    }
 }
+
 const server = http.createServer((req:IncomingMessage, res) => {
   if(!endpointName.test(req.url)) {
     sendData(res, {
       statusCode: 404 , 
       sendObject: {
       message: 'Non-existing endpoints',
-    }});
+    }
+  });
     return;
   }
 
@@ -175,4 +183,4 @@ const server = http.createServer((req:IncomingMessage, res) => {
   });
 });
 
-server.listen(8000);
+server.listen(process.env.port);
