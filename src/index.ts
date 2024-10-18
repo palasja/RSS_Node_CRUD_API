@@ -52,7 +52,7 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
     const user = userArr.find( u => u.id == id);
     if(user == undefined){
       sendData(res, {
-        statusCode: 400, 
+        statusCode: 404, 
         sendObject: {
           message: `user doesn't exist`
       }});
@@ -65,7 +65,34 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
       return;
     }
 }
+const post = (req: IncomingMessage, res: ServerResponse, body: string) => {
+  const bodyO = JSON.parse(body);
+  const newUser = {
+    username: undefined,
+    hobbies: undefined,
+    age: undefined,
+  };
 
+for (const prop in newUser) {
+  if(bodyO[prop] == undefined) {
+    sendData(res, {
+      statusCode: 404 , 
+      sendObject: {
+      message: `Requset doen't have ${prop} value`,
+    }});
+    return;
+  } else {
+    newUser[prop] = bodyO[prop];
+  }
+}
+
+(newUser as User).id = uuidv4();
+userArr.push(newUser as User);
+sendData(res, {
+  statusCode: 200 , 
+  sendObject: newUser
+});
+}
 const del = (req: IncomingMessage, res: ServerResponse) => {
   const arrArg = req.url.split('/');
   const id = arrArg[2];
@@ -81,7 +108,7 @@ const del = (req: IncomingMessage, res: ServerResponse) => {
   const user = userArr.find( u => u.id == id);
   if(user == undefined){
     sendData(res, {
-      statusCode: 400, 
+      statusCode: 404, 
       sendObject: {
         message: `user doesn't exist`
     }});
@@ -108,7 +135,7 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
   const user = userArr.find( u => u.id == id);
   if(user == undefined){
     sendData(res, {
-      statusCode: 400, 
+      statusCode: 404, 
       sendObject: {
         message: `user doesn't exist`
     }});
@@ -137,19 +164,15 @@ const server = http.createServer((req:IncomingMessage, res) => {
   req.on('end', () => {
     if(req.method == 'GET'){
       get(req, res);
-      return;
-    } else  if(req.method == 'DELETE'){
+    } else if(req.method == 'POST'){
+      post(req, res, body);
+    } else if(req.method == 'DELETE'){
       del(req, res);
-      return;
-    } else  if(req.method == 'PUT'){
+    } else if(req.method == 'PUT'){
       put(req, res, body);
-      return;
     }
+    return;
   });
-
-
-  
-
 });
 
 server.listen(8000);
