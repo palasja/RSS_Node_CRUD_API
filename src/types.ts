@@ -6,8 +6,8 @@ type User = {
 };
 
 type SendData = {
-  statusCode: number,
-  sendObject: Object
-}
+  statusCode: number;
+  sendObject: object;
+};
 
 export { User, SendData };

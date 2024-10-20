@@ -28,18 +28,19 @@
   "author": "palasja",
   "license": "ISC",
   "devDependencies": {
-    "@eslint/js": "^9.12.0",
+    "@eslint/js": "^9.13.0",
     "@types/uuid": "^10.0.0",
+    "@types/node": "^22.7.6",
     "@typescript-eslint/parser": "^8.9.0",
-    "eslint": "^9.12.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.13.0",
+    "prettier": "3.3.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3",
-    "typescript-eslint": "^8.9.0",
-    "dotenv": "^16.4.5"
+    "typescript-eslint": "^8.10.0"
   },
   "dependencies": {
-    "@types/node": "^22.7.6",
     "uuid": "^10.0.0"
   }
 }

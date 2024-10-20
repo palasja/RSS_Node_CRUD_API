@@ -1,27 +1,27 @@
-var counterModule = (function () {
-  var instance,
-      counter = 0;
+const counterModule = (function () {
+  let instance,
+    counter = 0;
 
-  var getCounter = function () {
+  const getCounter = function () {
     return counter;
-  }
+  };
 
-  var increaseCounter = function () {
-    counter ++;
-  }
+  const increaseCounter = function () {
+    counter++;
+  };
 
-  var createInstance = function () {
+  const createInstance = function () {
     return {
       getCounter: getCounter,
-      increaseCounter: increaseCounter
-    }
-  }
+      increaseCounter: increaseCounter,
+    };
+  };
 
   return {
     getInstance: function () {
       return instance || (instance = createInstance());
-    }
-  }
+    },
+  };
 })();
 
-export default counterModule
+export default counterModule;
