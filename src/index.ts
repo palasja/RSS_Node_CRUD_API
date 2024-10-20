@@ -1,46 +1,18 @@
-import { User } from './user';
+import { User } from './types';
 import 'dotenv/config';
-import http, { ClientRequest, IncomingMessage, ServerResponse } from 'node:http';
+import http, { IncomingMessage, ServerResponse } from 'node:http';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
-
-let userArr: User[] = [
-  {
-    id: uuidv4(),
-    username: 'palasja',
-    age: 18,
-    hobbies: ['coding', 'anime'],
-  },
-  {
-    id: uuidv4(),
-    username: 'Ya',
-    age: 33,
-    hobbies: ['qwe', 'asd'],
-  }
-];
-type SendData = {
-  statusCode: number,
-  sendObject: Object
-}
+import { sendData  } from './helper';
+import userArr from './db';
 const endpointName = new RegExp('/users');
-
-const sendData = (res: ServerResponse, data: SendData) => {
-  res.writeHead(data.statusCode, { 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(data.sendObject));
-}
-// const userValidation = (user: {id?: string; username?: string; age?: number; hobbies?: string[]}) : boolean => {
-//   if(user.id) delete user.id;
-//   const nameIsString = user.username ? typeof user.username === 'string' : true;
-//   const ageIsNumber =  user.age ? typeof user.age === 'number' : true;
-//   const hobbiesIsStringArray =  user.hobbies ? user.hobbies.every( h => typeof h == 'string') : true; 
-//   return nameIsString && ageIsNumber && hobbiesIsStringArray;
-// }
+let userDB = userArr;
 const get = (req: IncomingMessage, res: ServerResponse) => {
     const arrArg = req.url.split('/');
     if(arrArg.length == 2 ) {
       sendData(res, {
         statusCode: 200, 
         sendObject: {
-          data: userArr,
+          data: userDB,
       }});
       return;
     }
@@ -54,7 +26,7 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
       return;
     }
 
-    const user = userArr.find( u => u.id == id);
+    const user = userDB.find( u => u.id == id);
     if(user == undefined){
       sendData(res, {
         statusCode: 404, 
@@ -92,7 +64,7 @@ for (const prop in newUser) {
 }
 
 (newUser as User).id = uuidv4();
-userArr.push(newUser as User);
+userDB.push(newUser as User);
 sendData(res, {
   statusCode: 200 , 
   sendObject: newUser
@@ -110,7 +82,7 @@ const del = (req: IncomingMessage, res: ServerResponse) => {
     return;
   }
 
-  const user = userArr.find( u => u.id == id);
+  const user = userDB.find( u => u.id == id);
   if(user == undefined){
     sendData(res, {
       statusCode: 404, 
@@ -118,12 +90,11 @@ const del = (req: IncomingMessage, res: ServerResponse) => {
         message: `user doesn't exist`
     }});
   } else {
-    userArr = userArr.filter(u => u.id != id);
+    userDB = userDB.filter(u => u.id != id);
     res.writeHead(204, { 'Content-Type': 'application/json' });
     res.end();
   }
 }
-
 const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
   const bodyO = JSON.parse(body);
   const arrArg = req.url.split('/');
@@ -137,7 +108,7 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
     return;
   }
 
-const user = userArr.find( u => u.id == id);
+const user = userDB.find( u => u.id == id);
   if(user == undefined){
     sendData(res, {
       statusCode: 404, 
@@ -145,42 +116,48 @@ const user = userArr.find( u => u.id == id);
         message: `user doesn't exist`
     }});
   } else {
-    const arrId = userArr.findIndex( u => u.id == id);
+    const arrId = userDB.findIndex( u => u.id == id);
     
-    userArr[arrId] = {...userArr[arrId], ...bodyO};
+    userDB[arrId] = {...userDB[arrId], ...bodyO};
     sendData(res, {
       statusCode: 201 ,
-      sendObject: userArr[arrId]});
+      sendObject: userDB[arrId]});
    }
 }
 
-const server = http.createServer((req:IncomingMessage, res) => {
-  if(!endpointName.test(req.url)) {
-    sendData(res, {
-      statusCode: 404 , 
-      sendObject: {
-      message: 'Non-existing endpoints',
+const RunServer = () => {
+  const server = http.createServer((req:IncomingMessage, res) => {
+    if(!endpointName.test(req.url)) {
+      sendData(res, {
+        statusCode: 404 , 
+        sendObject: {
+        message: 'Non-existing endpoints',
+      }
+    });
+      return;
     }
+  
+    let body = '';
+    req.on('data', (chunk) => {
+        body += chunk;
+    });
+    req.on('end', () => {
+      if(req.method == 'GET'){
+        get(req, res);
+      } else if(req.method == 'POST'){
+        post(req, res, body);
+      } else if(req.method == 'DELETE'){
+        del(req, res);
+      } else if(req.method == 'PUT'){
+        put(req, res, body);
+      }
+      return;
+    });
   });
-    return;
-  }
+  
+  server.listen(process.env.port);
+}
 
-  let body = '';
-  req.on('data', (chunk) => {
-      body += chunk;
-  });
-  req.on('end', () => {
-    if(req.method == 'GET'){
-      get(req, res);
-    } else if(req.method == 'POST'){
-      post(req, res, body);
-    } else if(req.method == 'DELETE'){
-      del(req, res);
-    } else if(req.method == 'PUT'){
-      put(req, res, body);
-    }
-    return;
-  });
-});
+RunServer();
 
-server.listen(process.env.port);
+export default RunServer;

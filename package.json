@@ -8,6 +8,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "ts-node-dev ./src/index.ts",
+    "start:multi": "ts-node-dev ./src/cluster.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "pretier:check": "prettier . --check",
