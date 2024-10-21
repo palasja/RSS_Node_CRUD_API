@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { sendData } from '../helper';
 import { validate as uuidValidate } from 'uuid';
-import { userArr } from '../db';
+import { getAll } from '../db';
 
 const get = (req: IncomingMessage, res: ServerResponse) => {
   const arrArg = req.url!.split('/');
@@ -9,7 +9,7 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
     sendData(res, {
       statusCode: 200,
       sendObject: {
-        data: userArr,
+        data: getAll(),
       },
     });
     return;
@@ -25,7 +25,7 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
     return;
   }
 
-  const user = userArr.find((u) => u.id == id);
+  const user = getAll().find((u) => u.id == id);
   if (user == undefined) {
     sendData(res, {
       statusCode: 404,

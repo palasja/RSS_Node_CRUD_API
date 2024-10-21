@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { sendData } from '../helper';
 import { validate as uuidValidate } from 'uuid';
-import { userArr } from '../db';
+import { getAll } from '../db';
 
 const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
   const bodyO = JSON.parse(body);
@@ -17,7 +17,7 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
     return;
   }
 
-  const user = userArr.find((u) => u.id == id);
+  const user = getAll().find((u) => u.id == id);
   if (user == undefined) {
     sendData(res, {
       statusCode: 404,
@@ -26,12 +26,12 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
       },
     });
   } else {
-    const arrId = userArr.findIndex((u) => u.id == id);
+    const arrId = getAll().findIndex((u) => u.id == id);
 
-    userArr[arrId] = { ...userArr[arrId], ...bodyO };
+    getAll()[arrId] = { ...getAll()[arrId], ...bodyO };
     sendData(res, {
       statusCode: 201,
-      sendObject: userArr[arrId],
+      sendObject: getAll()[arrId],
     });
   }
 };

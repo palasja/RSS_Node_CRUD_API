@@ -16,8 +16,12 @@ let userArr: User[] = [
   },
 ];
 
+const getAll = () => {
+  return userArr;
+};
+
 const change = (users: User[]) => {
   userArr = users;
 };
 
-export { userArr, change };
+export { userArr, change, getAll };

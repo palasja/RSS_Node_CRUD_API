@@ -1,4 +1,4 @@
-import http, { IncomingMessage } from 'node:http';
+import http, { IncomingMessage, ServerResponse } from 'node:http';
 import { sendData } from './helper';
 import del from './crud/delete';
 import post from './crud/post';
@@ -8,7 +8,7 @@ import get from './crud/get';
 const endpointName = new RegExp('/users');
 
 const RunServer = (port: number) => {
-  const server = http.createServer((req: IncomingMessage, res) => {
+  const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
     try {
       if (process.env.workerServerPort) console.log(`Cluster: servre work on ${port}`);
       if (!endpointName.test(req.url!)) {
@@ -20,7 +20,6 @@ const RunServer = (port: number) => {
         });
         return;
       }
-
       let body = '';
       req.on('data', (chunk) => {
         body += chunk;
