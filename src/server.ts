@@ -1,145 +1,11 @@
-import { User } from './types';
-
-// import 'dotenv/config()';
-import http, { IncomingMessage, ServerResponse } from 'node:http';
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import http, { IncomingMessage } from 'node:http';
 import { sendData } from './helper';
-import userArr from './db';
+import del from './crud/delete';
+import post from './crud/post';
+import put from './crud/PUT'
+import get from './crud/get';
 
 const endpointName = new RegExp('/users');
-let userDB = userArr;
-
-const get = (req: IncomingMessage, res: ServerResponse) => {
-  const arrArg = req.url.split('/');
-  if (arrArg.length == 2) {
-    sendData(res, {
-      statusCode: 200,
-      sendObject: {
-        data: userDB,
-      },
-    });
-    return;
-  }
-  const id = arrArg[2];
-  if (!uuidValidate(id)) {
-    sendData(res, {
-      statusCode: 400,
-      sendObject: {
-        message: 'userId is invalid',
-      },
-    });
-    return;
-  }
-
-  const user = userDB.find((u) => u.id == id);
-  if (user == undefined) {
-    sendData(res, {
-      statusCode: 404,
-      sendObject: {
-        message: `user doesn't exist`,
-      },
-    });
-    return;
-  } else {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(
-      JSON.stringify({
-        user: user,
-      })
-    );
-    return;
-  }
-};
-const post = (req: IncomingMessage, res: ServerResponse, body: string) => {
-  const bodyO = JSON.parse(body);
-  const newUser: {
-    [username: string]: string | undefined | string[] | number,
-  } = {
-    username: undefined,
-    hobbies: undefined,
-    age: undefined,
-  };
-
-  for (const prop in newUser) {
-    if (bodyO[prop] == undefined) {
-      sendData(res, {
-        statusCode: 404,
-        sendObject: {
-          message: `Requset doen't have ${prop} value`,
-        },
-      });
-      return;
-    } else {
-      newUser[prop] = bodyO[prop];
-    }
-  }
-
-  (newUser as User).id = uuidv4();
-  userDB.push(newUser as User);
-  sendData(res, {
-    statusCode: 200,
-    sendObject: newUser,
-  });
-};
-const del = (req: IncomingMessage, res: ServerResponse) => {
-  const arrArg = req.url.split('/');
-  const id = arrArg[2];
-  if (!uuidValidate(id)) {
-    sendData(res, {
-      statusCode: 400,
-      sendObject: {
-        message: `userId is invalid`,
-      },
-    });
-    return;
-  }
-
-  const user = userDB.find((u) => u.id == id);
-  if (user == undefined) {
-    sendData(res, {
-      statusCode: 404,
-      sendObject: {
-        message: `user doesn't exist`,
-      },
-    });
-  } else {
-    userDB = userDB.filter((u) => u.id != id);
-    res.writeHead(204, { 'Content-Type': 'application/json' });
-    res.end();
-  }
-};
-const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
-  const bodyO = JSON.parse(body);
-  const arrArg = req.url.split('/');
-  const id = arrArg[2];
-  if (!uuidValidate(id)) {
-    sendData(res, {
-      statusCode: 400,
-      sendObject: {
-        message: `userId is invalid`,
-      },
-    });
-    return;
-  }
-
-  const user = userDB.find((u) => u.id == id);
-  if (user == undefined) {
-    sendData(res, {
-      statusCode: 404,
-      sendObject: {
-        message: `user doesn't exist`,
-      },
-    });
-  } else {
-    const arrId = userDB.findIndex((u) => u.id == id);
-
-    userDB[arrId] = { ...userDB[arrId], ...bodyO };
-    sendData(res, {
-      statusCode: 201,
-      sendObject: userDB[arrId],
-    });
-  }
-};
 
 const RunServer = (port: number) => {
   const server = http.createServer((req: IncomingMessage, res) => {
@@ -181,7 +47,5 @@ const RunServer = (port: number) => {
 
   server.listen(port);
 };
-
-//RunServer();
 
 export default RunServer;
