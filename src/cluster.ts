@@ -4,14 +4,13 @@ import { availableParallelism } from 'node:os';
 import process from 'node:process';
 import RunServer from './server';
 import 'dotenv/config';
-import counterModule from './test';
 
 const numCPUs = availableParallelism();
 const PORT = process.env.PORT;
 const workerCount = numCPUs - 1;
 const maxPort = Number(PORT) + workerCount;
 let activePort = Number(PORT);
-const counter = counterModule.getInstance();
+
 if (cluster.isPrimary) {
   // Fork workers.
   for (let i = Number(PORT) + 1; i <= maxPort; i++) {
@@ -35,5 +34,5 @@ if (cluster.isPrimary) {
   console.log(`Prymary on port ${PORT} started`);
 } else {
   console.log(`Worker on port ${process.env.workerServerPort} started`);
-  RunServer(Number(process.env.workerServerPort), counter);
+  RunServer(Number(process.env.workerServerPort));
 }

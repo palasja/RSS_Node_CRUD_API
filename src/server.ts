@@ -52,7 +52,9 @@ const get = (req: IncomingMessage, res: ServerResponse) => {
 };
 const post = (req: IncomingMessage, res: ServerResponse, body: string) => {
   const bodyO = JSON.parse(body);
-  const newUser = {
+  const newUser: {
+    [username: string]: string | undefined | string[] | number,
+  } = {
     username: undefined,
     hobbies: undefined,
     age: undefined,
@@ -139,37 +141,42 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
   }
 };
 
-const RunServer = (port: number, counter) => {
+const RunServer = (port: number) => {
   const server = http.createServer((req: IncomingMessage, res) => {
-    counter.increaseCounter();
-    console.log(counter.getCounter());
-    if (process.env.workerServerPort) console.log(`Cluster: servre work on ${port}`);
-    if (!endpointName.test(req.url)) {
-      sendData(res, {
-        statusCode: 404,
-        sendObject: {
-          message: 'Non-existing endpoints',
-        },
-      });
-      return;
-    }
-
-    let body = '';
-    req.on('data', (chunk) => {
-      body += chunk;
-    });
-    req.on('end', () => {
-      if (req.method == 'GET') {
-        get(req, res);
-      } else if (req.method == 'POST') {
-        post(req, res, body);
-      } else if (req.method == 'DELETE') {
-        del(req, res);
-      } else if (req.method == 'PUT') {
-        put(req, res, body);
+    try{
+      if (process.env.workerServerPort) console.log(`Cluster: servre work on ${port}`);
+      if (!endpointName.test(req.url)) {
+        sendData(res, {
+          statusCode: 404,
+          sendObject: {
+            message: 'Non-existing endpoints',
+          },
+        });
+        return;
       }
-      return;
-    });
+  
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk;
+      });
+      req.on('end', () => {
+        if (req.method == 'GET') {
+          get(req, res);
+        } else if (req.method == 'POST') {
+          post(req, res, body);
+        } else if (req.method == 'DELETE') {
+          del(req, res);
+        } else if (req.method == 'PUT') {
+          put(req, res, body);
+        }
+        return;
+      });
+    } catch{
+      sendData(res, {
+        statusCode: 500 ,
+        sendObject: {message: 'Something goes wrong on the server, please try later'} ,
+      });
+    }
   });
 
   server.listen(port);
