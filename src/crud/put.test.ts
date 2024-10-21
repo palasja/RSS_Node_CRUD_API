@@ -1,22 +1,23 @@
 import httpMocks from 'node-mocks-http';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import * as db from '../db';
 import put from './put';
 
 describe('test responce status', () => {
-  const testArr = [  {
-    id: uuidv4(),
-    username: 'test1',
-    age: 18,
-    hobbies: ['hobbies1', 'hobbies2'],
-  },
-  {
-    id: uuidv4(),
-    username: 'test2',
-    age: 32,
-    hobbies: ['hobbies3', 'hobbies4'],
-  }
-];
+  const testArr = [
+    {
+      id: uuidv4(),
+      username: 'test1',
+      age: 18,
+      hobbies: ['hobbies1', 'hobbies2'],
+    },
+    {
+      id: uuidv4(),
+      username: 'test2',
+      age: 32,
+      hobbies: ['hobbies3', 'hobbies4'],
+    },
+  ];
   test('wrong id ', () => {
     const request = httpMocks.createRequest({
       method: 'PUT',
@@ -26,7 +27,7 @@ describe('test responce status', () => {
 
     put(request, response, JSON.stringify({}));
     expect(response.statusCode).toBe(400);
-    expect(JSON.parse(response._getData())).toHaveProperty ('message');
+    expect(JSON.parse(response._getData())).toHaveProperty('message');
     expect(JSON.parse(response._getData()).message).toBe('userId is invalid');
   });
 
@@ -41,7 +42,7 @@ describe('test responce status', () => {
 
     put(request, response, JSON.stringify({}));
     expect(response.statusCode).toBe(404);
-    expect(JSON.parse(response._getData())).toHaveProperty ('message');
+    expect(JSON.parse(response._getData())).toHaveProperty('message');
     expect(JSON.parse(response._getData()).message).toBe(`user doesn't exist`);
   });
 
@@ -50,7 +51,7 @@ describe('test responce status', () => {
       username: 'test3',
       age: 50,
       hobbies: ['hobbies4', 'hobbies5'],
-    }
+    };
     const request = httpMocks.createRequest({
       method: 'PUT',
       url: `/users/${testArr[0].id}`,
@@ -65,4 +66,4 @@ describe('test responce status', () => {
     expect(JSON.parse(response._getData()).id).toBe(testArr[0].id);
     expect(JSON.parse(response._getData()).username).toBe(updateUser.username);
   });
-})
+});

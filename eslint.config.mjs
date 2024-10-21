@@ -27,6 +27,6 @@ export default [
     },
   },
   {
-    ignores: ['.config/*', 'webpack.config.js', 'jest.config.mjs'],
+    ignores: ['.config/*', 'webpack.config.js', 'jest.config.mjs', '**/*.test.ts'],
   },
 ];

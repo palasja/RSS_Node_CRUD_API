@@ -32,8 +32,8 @@ const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
       id: id,
       username: bodyO.username,
       age: bodyO.age,
-      hobbies: bodyO.hobbies
-    }
+      hobbies: bodyO.hobbies,
+    };
     getAll()[changedUserIndex] = changedUser;
     sendData(res, {
       statusCode: 201,
