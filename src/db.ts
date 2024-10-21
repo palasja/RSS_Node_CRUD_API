@@ -18,6 +18,6 @@ let userArr: User[] = [
 
 const change = (users: User[]) => {
   userArr = users;
-}
+};
 
-export {userArr, change};
+export { userArr, change };

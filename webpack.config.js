@@ -1,10 +1,10 @@
-var path = require("path");
+var path = require('path');
 const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
-  mode: "production",
+  mode: 'production',
   entry: './src/index.ts',
-  target : 'node',
+  target: 'node',
   externals: [nodeExternals()],
   module: {
     rules: [
@@ -23,11 +23,11 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   optimization: {
-    minimize: false
- },
- devServer: {
-  historyApiFallback: true,
-  open: true,
-  port: 3000,
-},
+    minimize: false,
+  },
+  devServer: {
+    historyApiFallback: true,
+    open: true,
+    port: 3000,
+  },
 };

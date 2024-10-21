@@ -1,30 +1,32 @@
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import globals from 'globals';
+import tsParser from '@typescript-eslint/parser';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import eslintJsPlugin from '@eslint/js';
 
 export default [
   {
-    files: ['**/*.{ts}'],
+    rules: eslintJsPlugin.configs.recommended.rules,
+  },
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      globals: globals.node,
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/ban-ts-comment': 'error',
-      '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-var-reqiures': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '[iI]gnored' }],
-      // 'prettier/prettier': [
-      //   'error',
-      //   {
-      //     endOfLine: 'auto',
-      //   },
-      // ],
-      'comma-dangle': ['error', 'only-multiline'],
-      'react/prop-types': 'off',
-      'react/display-name': 'off',
+      ...tsPlugin.configs.recommended.rules,
     },
   },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
+  {
+    files: ['test/**/*.ts'],
+    languageOptions: {
+      globals: globals.mocha,
+    },
+  },
+  {
+    ignores: ['.config/*', 'webpack.config.js', 'jest.config.mjs'],
+  },
 ];

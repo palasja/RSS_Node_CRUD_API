@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { sendData } from "../helper";
+import { IncomingMessage, ServerResponse } from 'http';
+import { sendData } from '../helper';
 import { validate as uuidValidate } from 'uuid';
-import {userArr} from "../db";
+import { userArr } from '../db';
 
 const get = (req: IncomingMessage, res: ServerResponse) => {
-  const arrArg = req.url.split('/');
+  const arrArg = req.url!.split('/');
   if (arrArg.length == 2) {
     sendData(res, {
       statusCode: 200,

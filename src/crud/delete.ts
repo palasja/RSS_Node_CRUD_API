@@ -1,10 +1,10 @@
-import { IncomingMessage, ServerResponse } from "http";
-import {userArr, change} from "../db";
-import { sendData } from "../helper";
+import { IncomingMessage, ServerResponse } from 'http';
+import { userArr, change } from '../db';
+import { sendData } from '../helper';
 import { validate as uuidValidate } from 'uuid';
 
 const del = (req: IncomingMessage, res: ServerResponse) => {
-  const arrArg = req.url.split('/');
+  const arrArg = req.url!.split('/');
   const id = arrArg[2];
   if (!uuidValidate(id)) {
     sendData(res, {
@@ -25,7 +25,7 @@ const del = (req: IncomingMessage, res: ServerResponse) => {
       },
     });
   } else {
-    change(userArr.filter((u) => u.id != id)) ;
+    change(userArr.filter((u) => u.id != id));
     res.writeHead(204, { 'Content-Type': 'application/json' });
     res.end();
   }

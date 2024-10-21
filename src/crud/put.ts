@@ -1,11 +1,11 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { sendData } from "../helper";
+import { IncomingMessage, ServerResponse } from 'http';
+import { sendData } from '../helper';
 import { validate as uuidValidate } from 'uuid';
-import { userArr } from "../db";
+import { userArr } from '../db';
 
 const put = (req: IncomingMessage, res: ServerResponse, body: string) => {
   const bodyO = JSON.parse(body);
-  const arrArg = req.url.split('/');
+  const arrArg = req.url!.split('/');
   const id = arrArg[2];
   if (!uuidValidate(id)) {
     sendData(res, {

@@ -1,13 +1,13 @@
-import { IncomingMessage, ServerResponse } from "http";
-import { sendData } from "../helper";
-import { User } from "../types";
+import { ServerResponse } from 'http';
+import { sendData } from '../helper';
+import { User } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import {userArr} from "../db";
+import { userArr } from '../db';
 
-const post = (req: IncomingMessage, res: ServerResponse, body: string) => {
+const post = (res: ServerResponse, body: string) => {
   const bodyO = JSON.parse(body);
   const newUser: {
-    [username: string]: string | undefined | string[] | number,
+    [username: string]: string | undefined | string[] | number;
   } = {
     username: undefined,
     hobbies: undefined,
